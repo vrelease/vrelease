@@ -9,7 +9,7 @@
 
 `vrelease` is a lightweight and straightforward release tool for GitHub and
 GitLab. It is packed as a single binary that requires no configuration file and
-weights under 200kb. This tool is also:
+weighs about 1MB. This tool is also:
 
 - **Simple:** All required parameters are detected automatically
 - **Minimal:** `git` is the only external program necessary
