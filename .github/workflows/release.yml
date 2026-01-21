@@ -1,14 +1,17 @@
-name: build
+name: release
 
 on:
-  pull_request:
-    branches:
-      - master
+  push:
+    tags:
+      - "v*"
     paths-ignore:
       - "**.md"
 
+permissions:
+  contents: write
+
 jobs:
-  multi-os:
+  build:
     runs-on: ${{ matrix.os }}
 
     defaults:
@@ -35,18 +38,6 @@ jobs:
 
       - name: Compile vrelease
         run: make build
-
-      - name: After build run (unix)
-        if: ${{ matrix.os != 'windows-latest' }}
-        run: |
-          ./vrelease --version
-          ./vrelease --help
-
-      - name: After build run (windows)
-        if: ${{ matrix.os == 'windows-latest' }}
-        run: |
-          ./vrelease.exe --version
-          ./vrelease.exe --help
 
       - name: Rename artifact
         run: |
@@ -80,18 +71,50 @@ jobs:
           path: "${{ env.ARTIFACT }}"
           retention-days: 1
 
-  docker:
+  release:
     runs-on: ubuntu-latest
+    needs: build
     steps:
-      - name: Checkout to vrelease
-        uses: actions/checkout@v4
+      - name: Download linux artifact
+        uses: actions/download-artifact@v4
         with:
-          fetch-depth: 0
+          name: vrelease-${{ github.sha }}-linux
+          path: linux-artifact
 
-      - name: Build image
-        run: docker build -t vrelease .
+      - name: Download macos x86_64 artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: vrelease-${{ github.sha }}-macos-x86_64
+          path: macos-x86_64-artifact
 
-      - name: After build run
+      - name: Download macos arm64 artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: vrelease-${{ github.sha }}-macos-arm64
+          path: macos-arm64-artifact
+
+      - name: Download windows artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: vrelease-${{ github.sha }}-windows.exe
+          path: windows-artifact
+
+      - name: Prepare artifacts
         run: |
-          docker run --rm vrelease --version
-          docker run --rm vrelease --help
+          mv linux-artifact/vrelease-* vrelease-linux
+          mv macos-x86_64-artifact/vrelease-* vrelease-macos-x86_64
+          mv macos-arm64-artifact/vrelease-* vrelease-macos-arm64
+          mv windows-artifact/vrelease-*.exe vrelease-windows.exe
+          chmod +x vrelease-linux
+
+      - name: Make release
+        run: |
+          ./vrelease-linux \
+            -limit 50 \
+            -add-checksum \
+            -attach vrelease-linux \
+            -attach vrelease-macos-x86_64 \
+            -attach vrelease-macos-arm64 \
+            -attach vrelease-windows.exe
+        env:
+          VRELEASE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

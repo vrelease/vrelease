@@ -1,0 +1,92 @@
+name: test-integrated
+
+on:
+  pull_request:
+    branches:
+      - master
+    paths-ignore:
+      - "**.md"
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  # ..........................................................................
+  wait-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for build to finish
+        uses: lewagon/wait-on-check-action@v1.3.4
+        with:
+          ref: ${{ github.sha }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          wait-interval: 20
+          running-workflow-name: wait-build
+          allowed-conclusions: success,skipped,neutral
+
+  # ..........................................................................
+  on-linux:
+    runs-on: ubuntu-latest
+    needs: wait-build
+    steps:
+      - name: Checkout to vrelease
+        uses: actions/checkout@v4
+
+      - name: Prepare and run tests
+        uses: ./.github/actions/reusable-test-routine
+        with:
+          artifact: linux
+          test-file: do-test.sh
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  # ..........................................................................
+  on-macos:
+    runs-on: macos-latest
+    needs: on-linux
+    steps:
+      - name: Checkout to vrelease
+        uses: actions/checkout@v4
+
+      - name: Prepare and run tests
+        uses: ./.github/actions/reusable-test-routine
+        with:
+          artifact: macos-arm64
+          test-file: do-test.sh
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  # ..........................................................................
+  on-windows:
+    runs-on: windows-latest
+    needs: on-macos
+    steps:
+      - name: Checkout to vrelease
+        uses: actions/checkout@v4
+
+      - name: Prepare and run tests
+        uses: ./.github/actions/reusable-test-routine
+        with:
+          artifact: windows.exe
+          test-file: do-test.sh
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  # ..........................................................................
+  on-docker:
+    runs-on: ubuntu-latest
+    needs: on-windows
+    steps:
+      - name: Checkout to vrelease
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build image
+        run: docker build -t vrelease .
+
+      - name: Prepare and run tests
+        uses: ./.github/actions/reusable-test-routine
+        with:
+          artifact: linux
+          test-file: do-docker-test.sh
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          retrieve-artifact: false
