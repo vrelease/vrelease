@@ -9,7 +9,8 @@
 ## Build, Test, and Development Commands
 - `make build` cleans, regenerates metadata, and compiles the binary via `nimble build`.
 - `make tests` runs the Nim test task defined in `vrelease.nimble`.
-- `make release` builds a release binary, strips it, and compresses it with `upx`.
+- `make release` builds a release binary and strips it.
+- When `Dockerfile` changes, always run `docker build -t vrelease .` to validate the image.
 - `nimble tests` is the direct equivalent of `make tests`.
 
 ## Coding Style & Naming Conventions
