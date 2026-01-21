@@ -30,7 +30,7 @@ jobs:
 
     steps:
       - name: Checkout to vrelease
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -46,9 +46,9 @@ jobs:
         if: ${{ matrix.os == 'windows-latest' }}
 
       - name: Setup Nim
-        uses: jiro4989/setup-nim-action@v1
+        uses: jiro4989/setup-nim-action@v2
         with:
-          nim-version: '1.6.0'
+          nim-version: '2.2.6'
 
       - name: Refresh package list
         run: nimble refresh
@@ -59,34 +59,40 @@ jobs:
       - name: Run tests
         run: make tests
 
-      - name: After build run
+      - name: After build run (unix)
+        if: ${{ matrix.os != 'windows-latest' }}
         run: |
           ./vrelease --version
           ./vrelease --help
 
+      - name: After build run (windows)
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: |
+          ./vrelease.exe --version
+          ./vrelease.exe --help
+
       - name: Rename artifact
         run: |
           if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
-            export ARTIFACT="vrelease-${GITHUB_SHA}-linux"
+            ARTIFACT="vrelease-${GITHUB_SHA}-linux"
+            mv vrelease "$ARTIFACT"
           fi
 
           if [ "${{ matrix.os }}" = "macos-latest" ]; then
-            export ARTIFACT="vrelease-${GITHUB_SHA}-macos"
+            ARTIFACT="vrelease-${GITHUB_SHA}-macos"
+            mv vrelease "$ARTIFACT"
           fi
 
           if [ "${{ matrix.os }}" = "windows-latest" ]; then
-            export ARTIFACT="vrelease-${GITHUB_SHA}-windows.exe"
+            ARTIFACT="vrelease-${GITHUB_SHA}-windows.exe"
+            mv vrelease.exe "$ARTIFACT"
           fi
 
-          mv vrelease "$ARTIFACT"
-
           ls -lash
-          echo "::set-env name=ARTIFACT::${ARTIFACT}"
-        env:
-          ACTIONS_ALLOW_UNSECURE_COMMANDS: "true"
+          echo "ARTIFACT=$ARTIFACT" >> "$GITHUB_ENV"
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: "${{ env.ARTIFACT }}"
           path: "${{ env.ARTIFACT }}"
@@ -96,7 +102,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout to vrelease
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 

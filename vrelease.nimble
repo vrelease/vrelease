@@ -11,9 +11,9 @@ bin           = @["vrelease"]
 # Dependencies
 
 requires "nim >= 1.6.0"
-requires "docopt == 0.6.8"
-requires "nimSHA2 == 0.1.1"
-requires "semver == 1.1.1"
+requires "docopt >= 0.7.1"
+requires "nimSHA2 >= 0.1.1"
+requires "semver >= 1.2.3"
 
 
 task tests, "Run all tests":

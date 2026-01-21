@@ -62,7 +62,7 @@ func atRelativeIndex* (t: seq[string], i: int): string =
   return t[len(t) + i]
 
 
-func mapC* [T, S](vals: seq[T], callback: (i: int, v: T) -> S): seq[S] =
+proc mapC* [T, S](vals: seq[T], callback: (i: int, v: T) -> S): seq[S] =
   var r: seq[S] = @[]
   for i, val in vals:
     r.add(callback(i, val))
@@ -70,7 +70,7 @@ func mapC* [T, S](vals: seq[T], callback: (i: int, v: T) -> S): seq[S] =
   return r
 
 
-func foreach* [T](vals: seq[T], fn: (v: T) -> void) =
+proc foreach* [T](vals: seq[T], fn: (v: T) -> void) =
   for _, val in vals:
     fn(val)
 
