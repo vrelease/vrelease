@@ -1,4 +1,4 @@
-FROM nimlang/nim:1.6.0-alpine-regular AS base
+FROM nimlang/nim:2.2.6-alpine-regular AS base
 LABEL maintainer="Caian Ertl <hi@caian.org>"
 
 RUN apk update && \
@@ -14,10 +14,10 @@ COPY writemeta.nim   /vr
 RUN nimble refresh
 RUN make
 
-FROM alpine:3.15 AS plat
+FROM alpine:3.20 AS plat
 RUN mkdir -p /wd
 RUN apk update --no-cache && \
-    apk add --no-cache openssl-dev git
+    apk add --no-cache openssl git
 
 FROM plat AS run
 WORKDIR /wd
