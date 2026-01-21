@@ -9,20 +9,20 @@
 
 `vrelease` is a lightweight and straightforward release tool for GitHub and
 GitLab. It is packed as a single binary that requires no configuration file and
-weighs about 1MB. This tool is also:
+weighs under 1MB. This tool is also:
 
 - **Simple:** All required parameters are detected automatically
 - **Minimal:** `git` is the only external program necessary
 - **Agnostic:** Language independent alternative for [`goreleaser`][goreleaser]
 - **CI/CD ready:** Designed to be integrated in CI/CD pipelines of any provider
 
-[gh-build-shield]: https://img.shields.io/github/workflow/status/caian-org/vrelease/build?label=build&logo=github&style=flat-square
+[gh-build-shield]: https://img.shields.io/github/actions/workflow/status/caian-org/vrelease/build-many.yml?branch=master&label=build&logo=github&style=flat-square
 [gh-build-url]: https://github.com/caian-org/vrelease/actions/workflows/build-many.yml
 
-[gh-test-shield]: https://img.shields.io/github/workflow/status/caian-org/vrelease/test?label=test&logo=github&style=flat-square
+[gh-test-shield]: https://img.shields.io/github/actions/workflow/status/caian-org/vrelease/test-many.yml?branch=master&label=test&logo=github&style=flat-square
 [gh-test-url]: https://github.com/caian-org/vrelease/actions/workflows/test-many.yml
 
-[gh-release-shield]: https://img.shields.io/github/workflow/status/caian-org/vrelease/release?label=release&logo=github&style=flat-square
+[gh-release-shield]: https://img.shields.io/github/actions/workflow/status/caian-org/vrelease/release-all.yml?branch=master&label=release&logo=github&style=flat-square
 [gh-release-url]: https://github.com/caian-org/vrelease/actions/workflows/release-all.yml
 
 [tag-shield]: https://img.shields.io/github/tag/caian-org/vrelease.svg?logo=git&logoColor=FFF&style=flat-square
