@@ -2,7 +2,7 @@ FROM nimlang/nim:1.6.0-alpine-regular AS base
 LABEL maintainer="Caian Ertl <hi@caian.org>"
 
 RUN apk update && \
-    apk add build-base coreutils musl-dev libffi-dev
+    apk add build-base coreutils musl-dev libffi-dev openssl-dev git
 
 FROM base AS build
 WORKDIR /vr
