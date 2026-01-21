@@ -14,7 +14,7 @@ COPY writemeta.nim   /vr
 RUN nimble refresh
 RUN make
 
-FROM alpine:3.20 AS plat
+FROM alpine:3.23 AS plat
 RUN mkdir -p /wd
 RUN apk update --no-cache && \
     apk add --no-cache openssl git
