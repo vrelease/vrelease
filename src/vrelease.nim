@@ -60,7 +60,7 @@ proc main () =
 
   # ---
   remotes.foreach(
-    func (remote: GitRemote) =
+    proc (remote: GitRemote) =
       let opts = ReleaseBodyOptions(
         remote         : remote,
         commits        : commits,
@@ -76,6 +76,7 @@ proc main () =
         body       : buildHTMLChangelog(opts),
         assets     : attacheables,
         preRelease : userInput.preRelease,
+        tag        : tagTo,
       )
 
       release.create()

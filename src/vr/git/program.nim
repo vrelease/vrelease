@@ -13,7 +13,7 @@ type
     HTTPS = "HTTPS",
     SSH   = "SSH"
 
-  GitProvider = enum
+  GitProvider* = enum
     GitHub = "GitHub",
     GitLab = "GitLab"
 
