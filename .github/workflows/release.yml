@@ -122,7 +122,7 @@ jobs:
       - name: Make release
         run: |
           ./vrelease-linux \
-            -limit 50 \
+            --limit 50 \
             --add-checksum \
             --attach vrelease-linux \
             --attach vrelease-linux-arm64 \
