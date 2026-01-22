@@ -153,6 +153,11 @@ proc getTags* (g: Git): seq[string] =
   return gitTagsRaw.splitClean()
 
 
+proc getTagMessage* (g: Git, tag: string): string =
+  let (raw, _) = execCmd(fmt"git log -1 --pretty=%B {tag}")
+  return raw.strip()
+
+
 proc getCommits* (g: Git, tagFrom: string, tagTo: string): seq[GitCommit] =
   let (gitCommitsRaw, _) = execCmd(fmt"git log --pretty=oneline {tagFrom}..{tagTo}")
   return gitCommitsRaw

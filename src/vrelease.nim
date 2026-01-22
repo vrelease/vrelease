@@ -55,6 +55,7 @@ proc main () =
 
   # ---
   let commits = git.getCommits(tagFrom, tagTo)
+  let tagMessage = git.getTagMessage(tagTo)
   logger.debug("git_commits", $commits)
   logger.debug("git_commits_count", $len(commits))
 
@@ -68,6 +69,7 @@ proc main () =
         commitLimit    : userInput.limit,
         addChecksum    : userInput.addChecksum,
         addDescription : userInput.addDescription,
+        tagMessage     : tagMessage,
       )
 
       let release = Release(
