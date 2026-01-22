@@ -80,6 +80,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
+      - name: Checkout to vrelease
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Download linux artifact
         uses: actions/download-artifact@v4
         with:
